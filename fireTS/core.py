@@ -75,6 +75,17 @@ class GeneralAutoRegressor(TimeSeriesRegressor, RegressorMixin):
         self.num_exog_inputs = len(exog_order)
         self.pred_step = pred_step
 
+    # def fit(self, X, y, **params):
+    #     """
+    #     Create lag features and fit the base_estimator.
+
+    #     :param array-like X: exogenous input time series, shape = (n_samples,
+    #                          n_exog_inputs)
+    #     :param array-like y: target time series to predict, shape = (n_samples)
+    #     """
+    #     X, y = self._check_and_preprocess_X_y(X, y)
+    #     features, target = self._preprocess_data(X, y)
+    #     self.base_estimator.fit(features, target, **params)
     def fit(self, X, y, **params):
         """
         Create lag features and fit the base_estimator.
@@ -83,8 +94,19 @@ class GeneralAutoRegressor(TimeSeriesRegressor, RegressorMixin):
                              n_exog_inputs)
         :param array-like y: target time series to predict, shape = (n_samples)
         """
-        X, y = self._check_and_preprocess_X_y(X, y)
-        features, target = self._preprocess_data(X, y)
+        if isinstance(X,list) and isinstance(y,list):
+            features = []
+            target = []
+            for i in range(len(X)):
+                X[i], y[i] = self._check_and_preprocess_X_y(X[i], y[i])
+                fi, ti = self._preprocess_data(X, y)
+                features.append(fi)
+                target.append(ti)
+            features = np.vstack(features)
+            targets  = np.hstack(target)
+        else:
+            X, y = self._check_and_preprocess_X_y(X, y)
+            features, target = self._preprocess_data(X, y)
         self.base_estimator.fit(features, target, **params)
 
     def _preprocess_data(self, X, y):
