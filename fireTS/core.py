@@ -103,7 +103,7 @@ class GeneralAutoRegressor(TimeSeriesRegressor, RegressorMixin):
                 features.append(fi)
                 target.append(ti)
             features = np.vstack(features)
-            targets  = np.hstack(target)
+            target   = np.hstack(target)
         else:
             X, y = self._check_and_preprocess_X_y(X, y)
             features, target = self._preprocess_data(X, y)
