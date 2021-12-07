@@ -71,9 +71,14 @@ class MetaLagFeatureProcessor(object):
         ])
 
     def generate_lag_features(self):
-        lag_feature_list = [
-            p.generate_lag_features() for p in self._lag_feature_processors
-        ]
+        lag_feature_list = []
+        for p in self._lag_feature_processors:
+            feat = p.generate_lag_features()
+            if len(feat)>0:
+                lag_feature_list.append( feat )
+        # lag_feature_list = [
+        #     p.generate_lag_features() for p in self._lag_feature_processors
+        # ]
         lag_features = np.concatenate(lag_feature_list, axis=1)
         return lag_features
 
